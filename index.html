@@ -15,7 +15,7 @@
   <script>
     window.$docsify = {
       name: 'my_knowledge',
-      repo: '',
+      repo: 'https://github.com/AnJian2020/my_knowledge.git',
       loadNavbar: true,
       loadSidebar: true,
       maxLevel: 5,
@@ -23,6 +23,9 @@
       auto2top: true,
       homepage: "README.md",
       search: 'auto', // 默认值
+      plugins:[
+        EditOnGithubPlugin.create("https://github.com/AnJian2020/my_knowledge/main/")
+      ],
 
       search: [
         '/',            // => /README.md
