@@ -1,6 +1,6 @@
 # Chapter 2.Variables and Basic Types
 
-## 2.1 Primitive [Built-in](内置) Types
+## 2.1 Primitive  [Built-in](内置) Types
 
 The arithmetic types represent <font color='red'>characters, integers, boolean values, and floating-point numbers</font>. Primitive built-in types also includes a special type named <font color='red'>void</font>.
 
@@ -63,7 +63,6 @@ What happens depends on the range of the values that the types permit:
 
 ```c++
 #include<iostream>
-
 int main()
 {
     unsigned u=10;
@@ -92,4 +91,103 @@ int main(){
 
 <font color='red'>Integer literals that begin with 0 (zero) are interpreted as octal. Those that begin with either 0x or 0X are interpreted as hexadecimal.</font>
 
-By default, decimal literals are signed whereas octal and hexadecimal literals can be either signed or unsigned types. 
+By default, <font color='cornflowerblue'>decimal literals are signed whereas octal and hexadecimal literals can be either signed or unsigned types</font>. A decimal literal has the smallest type of int, long, or long long in which the literal’s value fits. Octal and hexadecimal literals have the smallest type of int, unsigned int, long, unsigned long, long long, or unsigned long long in which the literal’s value fits. There are no literals of type short.
+
+*Table 2.2. Specifying the Type of a Literal*
+
+<img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111030928383.png" alt="image-20211103092812089" style="zoom: 67%;" />
+
+The value of a decimal literal is never a negative number. The minus sign is an operator that negates the value of its (literal) operand.
+
+Floating-point literals include either a decimal point or an exponent specified using scientific notation. <font color='red'>Using scientific notation, the exponent is indicated by either E or e</font>. 
+
+  > 3.14159 3.14159E0 0. 0e0 .001
+
+By default,<font color='cornflowerblue'> floating-point literals have type double.</font> 
+
+**Character and Character String Literal**
+
+A character enclosed within single quotes is a literal of type char. Zero or more characters enclosed in double quotation marks is a string literal:
+
+```c++
+'a' // character literal
+"Hello World!" // string literal
+```
+
+The type of a string literal is array of constant chars. The compiler appends a null character (’\0’) to every string literal. Thus, the actual size of a string literal is one more than its apparent size. 
+
+Two string literals that appear adjacent to one another and that are separated only by spaces, tabs, or newlines are concatenated into a single literal.
+
+**Escape Sequences**
+
+C++ defines several escape sequences:
+
+|     newline     |  \n  | horizontal tab |  \t  | alert(bell)  | \a   |
+| :-------------: | :--: | :------------: | :--: | :----------: | ---- |
+|  vertical tab   |  \v  |   backspace    |  \b  | double quote | \\"  |
+|    backslash    | \\\  | question mark  |  \?  | single quote | \\'  |
+| carriage return |  \r  |    formfeed    |  \f  |              |      |
+
+We can also write a generalized escape sequence, which is \x followed by one or more hexadecimal digits or a \ followed by one, two, or three octal digits. The value represents the numerical value of the character. 
+
+> \7  (bell)		\12  (newline)		\40  (blank)
+>
+> \0  (null)		\115  ('M')				\x4d  ('M')
+
+Note that if a \ is followed by more than three octal digits, only the first three are associated with the \\. In contrast, \x uses up all the hex digits following it.
+
+**Specifying the Type of a Literal**
+
+We can override the default type of an integer, floating- point, or character literal by supplying a suffix or prefix.
+
+**Boolean and Pointer Literals**
+
+The words true and false are literals of type bool.
+
+The word nullptr is a pointer literal.
+
+## 2.2 Variables
+
+### 2.2.1 Variable Definitions
+
+A simple variable definition consists of a <font color='red'>type specifier, followed by a list of one or more variable names separated by commas, and ends with a semicolon</font>. Each name in the list has the type defined by the type specifier. A definition may (optionally) provide an initial value for one or more of the names it defines.
+
+<font color='cornflowerblue'>*What is an Object? Most generally, an object is a region of memory that can contain data and has a type.*</font>
+
+**Initializers**
+
+ When a definition defines two or more variables, the name of each object becomes visible immediately. Thus, it is possible to initialize a variable to the value of one defined earlier in the same definition.
+
+```c++
+double price = 109.99, discount = price * 0.16;
+double salePrice = applyDiscount(price, discount);
+```
+
+> **Warning**
+>
+> <font color='red'>Initialization is not assignment. Initialization happens when a variable is given a value when it is created. Assignment obliterates an object’s current value and replaces that value with a new one</font>.
+
+**List Initialization**
+
+<font color='cornflowerblue'>The use of curly braces for initialization is referred to as  list initialization</font>. When used with variables of built-in type, this form of initialization has one important property: The compiler will not let us list initialize variables of built-in type if the initializer might lead to the loss of information.
+
+```c++
+long double ld = 3.1415926536;
+int a{ld}, b = {ld}; // error: narrowing conversion required
+int c(ld), d = ld; // ok: but value will be truncated
+```
+
+The compiler rejects the initializations of a and b because using a long double to initialize an int is likely to lose data. At a minimum, the fractional part of ld will be truncated. In addition, the integer part in ld might be too large to fit in an int.
+
+**Default Initialization**
+
+When we define a variable without an initializer, the variable is default initialized. What that default value is depends on the type of the variable and may also depend on where the variable is defined.
+
+<font color='red'>The value of an object of built-in type that is not explicitly initialized depends on where it is defined. </font>
+
+- Variables defined outside any function body are initialized to zero.
+- Variables of built-in type defined inside a function are uninitialized. It is an error to copy or otherwise try to access the value of a variable whose value is undefined.
+
+Each class controls how we initialize objects of that class type. In particular, it is up to the class whether we can define objects of that type without an initializer. If we can, the class determines what value the resulting object will have.
+
+<font color='red'>Most classes let us define objects without explicit initializers.</font> Such classes supply an appropriate default value for us. 
