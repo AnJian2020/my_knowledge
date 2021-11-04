@@ -225,7 +225,7 @@ Identifiers in C++ can be composed of letters, digits, and the underscore charac
 
 <img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111041441586.png" alt="image-20211104144105484" style="zoom:80%;" />
 
-Table 2.4 C++ Alternative Operator Names
+*Table 2.4 C++ Alternative Operator Names*
 
 <img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111041438349.png" alt="image-20211104143828280" style="zoom:80%;" />
 
@@ -304,4 +304,14 @@ After a reference has been defined, all operations on that reference are actuall
 Because references are not objects, we may not define a reference to a reference.
 
 **Reference Definitions**
+
+Each identifier that is a reference must be preceded by the & symbol.
+
+The type of a reference and the object to which the reference refers must match exactly. A reference may be bound only to an object, not to a literal or to the result of a more general expression.
+
+```c++
+int &refVal4 = 10; // error: initializer must be an object
+double dval = 3.14;
+int &refVal5 = dval; // error: initializer must be an int object
+```
 
