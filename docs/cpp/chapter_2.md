@@ -10,7 +10,7 @@ Two categories: **integral types**(which include character and boolean types) an
 
 *Table 2.1. C++: Arithmetic Types*
 
-​    <img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111021226545.png" alt="image-20211102122619366" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111021226545.png" alt="image-20211102122619366" style="zoom:67%;" />
 
 
 The bool type represents the truth values true and false.
@@ -190,4 +190,118 @@ When we define a variable without an initializer, the variable is default initia
 
 Each class controls how we initialize objects of that class type. In particular, it is up to the class whether we can define objects of that type without an initializer. If we can, the class determines what value the resulting object will have.
 
-<font color='red'>Most classes let us define objects without explicit initializers.</font> Such classes supply an appropriate default value for us. 
+<font color='red'>Most classes let us define objects without explicit initializers.</font> Such classes supply an appropriate default value for us. Some classes require that every object be explicity initialized.
+
+> Uninitialized objects of built-in type defined inside a function body have undefined value. Objects of class type that we do not explicitly initialize have a value that is defined by the class.
+
+### 2.2.2 Variable Declarations and Definitions
+
+C++ distinguishes between declarations and definitions. <font color="red">A declaration makes a name known to the program. A file that wants to use a name defined elsewhere includes a declaration for that name.</font> A definition creates the associated entity.
+
+- **declaration**: the type and name of a variable
+
+- **defination**:	specify the name and type, and it allocates  storage and may provide the variable with an initial value.
+
+```c++
+extern int i; // declares but does not define i
+int j; // declares and defines j
+```
+
+Any declaration that includes an explicit initializer is a definition. An extern that has an initializer is a definition. It is an error to provide an initializer on an extern inside a function.
+
+```c++
+extern double pi = 3.1416; // definition
+```
+
+> Variables must be defined exactly once but can be declared many times.
+
+ To use the same variable in multiple files, we must define that variable in one—and only one—file. Other files that use that variable must declare—but not define—that variable.
+
+### 2.2.3 Identifiers
+
+Identifiers in C++ can be composed of letters, digits, and the underscore character. Identifiers must begin with either a letter or an underscore. Identifiers are case-sensitive; upper- and lowercase letters are distinct.
+
+*Table 2.3 C++ Keywords*
+
+<img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111041441586.png" alt="image-20211104144105484" style="zoom:80%;" />
+
+Table 2.4 C++ Alternative Operator Names
+
+<img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111041438349.png" alt="image-20211104143828280" style="zoom:80%;" />
+
+The identifiers we define in our own programs may not contain two consecutive underscores, nor can an identifier begin with an underscore followed immediately by an uppercase letter. In addition, identifiers defined outside a function may not begin with an underscore.
+
+**Conventions for Variable Names**
+
+- An identifier should give some indication of its meaning. 
+- Variable names normally are lowercase—index, not Index or INDEX. 
+- Like Sales_item, classes we define usually begin with an uppercase letter. 
+- Identifiers with multiple words should visually distinguish each word, for example, student_loan or studentLoan, not studentloan
+
+### 2.2.4 Scope of a Name
+
+Most scopes in C++ are delimited by curly braces. <font color='red'>Names are visible from the point where they are declared until the end of the scope in which the declaration appears.</font>
+
+```c++
+#include <iostream>
+int main()
+{
+    int sum = 0;
+    for (int val = 1; val <= 10; ++val)
+        sum += val;
+    std::cout << "Sum of 1 to 10 inclusive is "
+              << sum << std::endl;
+    return 0;
+}
+```
+
+The names defined outside a function have global scope. Once declared, names at the global scope are accessible throughout the program.
+
+**Nested Scope**
+
+Scopes can contain other scopes. The contained (or nested) scope is referred to as an inner scope, the containing scope is the outer scope. 
+
+Once a name has been declared in a scope, that name can be used by scopes nested inside that scope. Names declared in the outer scope can also be redefined in an inner scope.
+
+```c++
+#include <iostream>
+// Program for illustration purposes only: It is bad style for a function
+// to use a global variable and also define a local variable with the same name
+int reused = 42;
+int main()
+{
+    int unique = 0;
+    std::cout << reused << " " << unique << std::endl;
+    int reused = 0;
+    std::cout << reused << " " << unique << std::endl;
+    std::cout << ::reused << " " << unique << std::endl;
+    return 0;
+}
+```
+
+## 2.3 Compound Types
+
+The declarations we have seen so far have declarators that are nothing more than variable names. The type of such variables is the base type of the declaration.
+
+### 2.3.1 References
+
+A reference defines an alternative name for an object. A reference type “refers to” another type. We define a reference type by writing a declarator of the form &d, where d is the name being declared.
+
+```c++
+int ival = 1024;
+int &refVal = ival;//refVal refers to (is anothor name for) ival
+int &refVal2;//error:a reference must be initialized
+```
+
+<font color='cornflowerblue'>Ordinarily, when we initialize a variable, the value of the initializer is copied into the object we are creating. When we define a reference, instead of copying the initializer’s value, we bind the reference to its initializer.</font> <font color='red'>Once initialized, a reference remains bound to its initial object. There is no way to rebind a reference to refer to a different object. Because there is no way to rebind a reference, references must be initialized.</font>
+
+**A Reference Is an Alias**
+
+> <font color='red'>A reference is not an object. Instead, a reference is just another name for an already existing object.</font>
+
+After a reference has been defined, all operations on that reference are actually operations on the object to which the reference is bound.
+
+Because references are not objects, we may not define a reference to a reference.
+
+**Reference Definitions**
+
