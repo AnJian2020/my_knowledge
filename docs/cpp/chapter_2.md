@@ -315,3 +315,170 @@ double dval = 3.14;
 int &refVal5 = dval; // error: initializer must be an int object
 ```
 
+### 2.3.2 Pointers
+
+A pointer is a compound type that “points to” another type. Pointers are used for indirect access to other objects. <font color='red'>A pointer is an object in its own right</font>. Pointers can be assigned and copied; <font color='red'>a single pointer can point to several different objects over its lifetime</font>. Unlike a reference, <font color='cornflowerblue'>a pointer need not be initialized at the time it is defined</font>. Like other built-in types, <font color='red'>pointers defined at block scope have undefined value if they are not initialized</font>.
+
+We define a pointer type by writing a declarator of the form *d, where d is the name being defined. The * must be repeated for each pointer variable.
+
+```c++
+int *ip1,*ip2; // both ip1 and ip2 are pointers to int
+double dp1,*dp2;	// dp2 is a pointer to double, dp1 is a double
+```
+
+**Taking the Address of an Object**
+
+A pointer holds the address of another object. We get the address of an object by usin the address-of operator (the & operator).
+
+```c++
+int ival = 42;
+int *p = &ival; // p is a pointer to ival, and it holds the address of ival
+```
+
+> Because references are not objects, they don't have address. Hence, we may not define a pointer to a reference.
+
+<font color='red'>The types of the pointer and the object to which it points must match</font>. The types must match because the type of the pointer is used to infer the type of the object to which the pointer points. If a pointer addressed an object of another type, operations performed on the underlying object would fail.
+
+**Pointer Value**
+
+The value (the address) stored in a pointer can be in one of four states:
+
+1. It can point to an object.
+2. It can point to the location just immediately past the end of an object. 
+3. It can be a null pointer, indicating that it is not bound to any object. 
+4. It can be invalid; values other than the preceding three are invalid.
+
+Although pointers in cases 2 and 3 are valid, there are limits on what we can do with such pointers. Because these pointers do not point to any object, we may not use them to access the (supposed) object to which the pointer points. If we do attempt to access an object through such pointers, the behavior is undefined. 
+
+**Using a Pointer to Access an Object**
+
+When a pointer points to an object, we can use the dereference operator (the * operator) to access that object:
+
+```c++
+int ival = 42;
+int *p = &ival;
+cout<< *p;
+```
+
+Dereferencing a pointer yields the object to which the pointer points. We can assign to that object by assigning to the result of the dereference. When we assign to *p, we are assigning to the object to which p points.
+
+> We may dereference only a valid pointer that points to an object
+
+**Null Pointers**
+
+A null pointer does not point to any object. There are several ways to obtain a null pointer:
+
+1. We can initialize the pointer by the literal nullptr. nullptr is a literal that has a special type that can be converted to any other pointer type.
+2. We can initialize a pointer to the literal 0.
+3. Older programs sometimes use a preprocessor variable named NULL, which the cstdlib header defines as 0
+
+```c++
+int *p1 = nullptr;//equivalent to int *p1 = 0
+int *p2 = 0;	// directly initializes p2 from the literal constant 0
+// must #include cstdlib
+int *p3 = NULL;	//quivalent to int *p3 = 0
+```
+
+When we use a preprocessor variable, the preprocessor automatically replaces the variable by its value. Hence, initializing a pointer to NULL is equivalent to initializing it to 0.
+
+It is illegal to assign an int variable to a pointer, even if the variable’s value happens to be 0.
+
+```
+int zero = 0;
+pi = zero; // error
+```
+
+**Assignment and Pointers**
+
+ The important thing to keep in mind is that assignment changes its left-hand operand.
+
+```c++
+pi = &ival; //value in pi is changed; pi now points to ival
+```
+
+We assign a new value to pi, which changes the address that pi holds.
+
+```c++
+*pi = 0;	// value in ival is changed; pi is nuchanged.
+```
+
+Then *pi (the value to which pi points) is changed.
+
+**Other Pointer Operations**
+
+Because  the pointer has a valid value, we can use a pointer in a condition. If the pointer is 0, then the condition is false.
+
+```c++
+int ival = 1024;
+int *pi = 0; // pi is a valid, null pointer
+int *pi2 = &ival; // pi2 is a valid pointer that holds the address of ival
+if (pi) // pi has value 0, so condition evaluates as false
+ // ...
+if (pi2) // pi2 points to ival, so it is not 0; the condition evaluates as true
+```
+
+> <font color="red">Any nonzero pointer evaluates as true.</font>
+
+Given two valid pointers of the same type, we can compare them using the equality (==) or inequality (!=) operators. The result of these operators has type bool. 
+
+<font color='red'>Two pointers are equal if they hold the same address and unequal otherwise</font>. <font color='cornflowerblue'>Two pointers hold the same address (are equal) if they are both null, if they address the same object, or if they are both pointers one past the same object.</font> Note that it is possible for a pointer to an object and a pointer one past the end of a different object to hold the same address. Such pointers will compare equal.
+
+Because these operations use the value of the pointer, a pointer used in a condition or in a comparsion must be a valid pointer.
+
+**void\* Pointers**
+
+The type void* is a special pointer type that can hold the address of any object. A void* pointer holds an address, but the type of the object at that address is unknown.
+
+Some things we can do with a void* pointer:
+
+- We can compare it to another pointer.
+- We can pass it to or return it from a function.
+- We can assign it to another void* pointer.
+
+We cannot use a void* to operate on the object it addresses—we don’t know that object’s type, and the type determines what operations we can perform on the object. 
+
+Generally, we use a void* pointer to deal with memory as memory, rather than using the pointer to access the object stored in that memory. 
+
+### 2.3.3 Understanding Compound Type Declarations
+
+**Defining Multiple Variables**
+
+There are two common styles used to define multiple variables with pointer or reference type. 
+
+- The first places <font color='red'>the type modifier adjacent to the identifier</font>. This style emphasizes that the variable has the indicated compound type.
+
+  ```c++
+  int *p1, *p2; // both p1 and p2 are pointers to int
+  ```
+
+- The second places <font color='red'>the type modifier with the type but defines only one variable per statement</font>. This style emphasizes that the declaration defines a compound type.
+
+  ```c++
+  int* p1; // p1 is a pointer to int
+  int* p2; // p2 is a pointer to int
+  ```
+
+We indicate each pointer level by its own \*. That is, we write ** for a pointer to a pointer, and so on.
+
+```c++
+#include <iostream>
+using namespace std;
+int main()
+{
+    int ival = 1024;
+    int *pi = &ival; // pi points to an int
+    int **ppi = &pi; // ppi points to a pointer to an int
+    cout << "The value of ival\n"
+         << "direct value: " << ival << "\n"
+         << "indirect value: " << *pi << "\n"
+         << "doubly indirect value: " << **ppi << endl;
+    return 0;
+}
+```
+
+Just as dereferencing a pointer to an int yields an int, dereferencing a pointer to a pointer yields a pointer. To access the underlying object, we must dereference the original pointer twice.
+
+<img src="https://raw.githubusercontent.com/AnJian2020/md_picture/main/img/202111051709007.png" alt="image-20211105170906872" style="zoom: 67%;" />
+
+**References to Pointers**
+
