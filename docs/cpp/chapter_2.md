@@ -482,3 +482,68 @@ Just as dereferencing a pointer to an int yields an int, dereferencing a pointer
 
 **References to Pointers**
 
+```c++
+int i = 42;
+int *p; // p is a pointer to int
+int *&r = p; // r is a reference to the pointer p
+r = &i; // r refers to a pointer; assigning &i to r makes p point to i
+*r = 0; // dereferencing r yields i, the object to which p points; changes i to 0
+```
+
+<font color='cornflowerblue'>The easiest way to understand the type of r is to read the definition right to left</font>. <font color="red">The symbol closest to the name of the variable (in this case the & in &r) is the one that has the most immediate effect on the variable’s type</font>.
+
+ Thus, we know that r is a reference. The rest of the declarator determines the type to which r refers. The next symbol, * in this case, says that the type r refers to is a pointer type. Finally, the base type of the declaration says that r is a reference to a pointer to an int.
+
+> It can be easier to understand complicated pointer or reference declarations if you read them from right to left.
+
+## 2.4 const Qualifier
+
+We can make a variable unchangeable by defining the variable's type as const.
+
+```c++
+const int bufSize = 512;	// input buffer size
+```
+
+<font color='red'>Because we can’t change the value of a const object after we create it, it must be initialized</font>. <font color='cornflowerblue'>As usual, the initializer may be an arbitrarily complicated expression</font>.
+
+```c++
+const int i = get_size(); // ok: initialized at run time
+const int j = 42; // ok: initialized at compile time
+const int k; // error: k is uninitialized const
+```
+
+**Initialization and const**
+
+Among the operations that don’t change the value of an object is initialization— when we use an object to initialize another object, it doesn’t matter whether either or both of the objects are consts.
+
+```c++
+int i = 42;
+const int ci = i; // ok: the value in i is copied into ci
+int j = ci; // ok: the value in ci is copied into 
+```
+
+The constness of ci matters only for operations that might change ci. Copying an object doesn’t change that object. Once the copy is made, the new object has no further access to the original object.
+
+**By Default, const Objects Are Local to a File**
+
+When a const object is initialized from a compile-time constant, the complier will usually replace uses of the variable with its corresponding value during compilation.
+
+<font color='red'>Yet avoid multiple definitions of the same variable, const variables are defined as local to the file</font>. When we define a const with the same name in multiple files, it is as if we had written definitions for separate variables in each file.
+
+Sometimes we have a const variable that we want to share across multiple files but whose initializer is not a constant expression. In this case, we don’t want the compiler to generate a separate variable in each file. Instead, we want the const object to behave like other (nonconst) variables. <font color='red'>We want to define the const in one file, and declare it in the other files that use that object</font>.
+
+To define a single instance of a const variable, we use the keyword extern on both its definition and declaration(s).
+
+```c++
+// file_1.cc defines and initializes a const that is accessible to other files 
+extern const int bufSize = fcn();	// definition
+// file_1.h
+extern const int bufSize; // same bufSize as defined in file_1.cc declaration
+```
+
+> <font color='red'>To share a const object among multiple files, you must define the variable as extern.</font>
+
+### 2.4.1 References to const
+
+ To do so we use a reference to const, which is a reference that refers to a const type. Unlike an ordinary reference, a reference to const <font color='red'>cannot</font> be used to change the object to which the reference is bound.
+
