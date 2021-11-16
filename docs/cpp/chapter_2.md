@@ -547,3 +547,20 @@ extern const int bufSize; // same bufSize as defined in file_1.cc declaration
 
  To do so we use a reference to const, which is a reference that refers to a const type. Unlike an ordinary reference, a reference to const <font color='red'>cannot</font> be used to change the object to which the reference is bound.
 
+```c++
+const int ci = 1024;
+const int &r1 = ci; // ok: both reference and underlying object are const
+r1 = 42; // error: r1 is a reference to const
+int &r2 = ci; // error: non const reference to a const object
+```
+
+> const Reference is a Reference to const.
+
+ Whether a reference refers to a const or nonconst type affects what we can do with that reference, not whether we can alter the binding of the reference itself.
+
+**Initialization and References to const**
+
+There are two exceptions to the rule that the type of a reference must match the type of the object to which it refers:
+
+1. We can initialize a reference to const from any expression that can be converted to the type of the reference.
+2. We can bind a pointer of reference to a base-class type to an object of a type derived from that base class.
