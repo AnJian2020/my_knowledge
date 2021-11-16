@@ -564,3 +564,62 @@ There are two exceptions to the rule that the type of a reference must match the
 
 1. We can initialize a reference to const from any expression that can be converted to the type of the reference.
 2. We can bind a pointer of reference to a base-class type to an object of a type derived from that base class.
+
+A temporary object is an unnamed object created by the compiler when it needs a place to store a result from evaluating an expression.
+
+```c++
+const int temp = dval; // create a temporary const int from the double
+const int &ri = temp; // bind ri to that temporar
+```
+
+The reason that we can't initialize a reference to an int from a variable of type double:
+
+If ri weren’t const, we could assign to ri. Doing so would change the object to which ri is bound. That object is a temporary, not dval. The programmer who made ri refer to dval would probably expect that assigning to ri would change dval. After all, why assign to ri unless the intent is to change the object to which ri is bound? Because binding a reference to a temporary is almost surely not what the programmer intended, the language makes it illegal.
+
+**A Reference to const May Refer to an Object That Is Not const**
+
+It is important to realize that a reference to const restricts only what we can do through that reference. Binding a reference to const to an object says nothing about whether the underlying object itself is const.
+
+### 2.4.2 Pointers and const
+
+A pointer to const may not be used to change the object to which the pointer points. We may store the address of a const object only in a pointer to const.
+
+```c++
+const double pi = 3.14; // pi is const; its value may not be changed
+double *ptr = &pi; // error: ptr is a plain pointer
+const double *cptr = &pi; // ok: cptr may point to a double that is const
+*cptr = 42; // error: cannot assign to *cptr
+```
+
+There are two exceptions to the rule that the types of a pointer and the object to which it points must match:
+
+1. We can use a pointer to const to point to a nonconst object.
+2. We can bind a pointer or reference to a base-class type to an object of a type derived from that base class.
+
+```c++
+double dval = 3.14;
+cptr = &dval;
+```
+
+**const Pointers**
+
+Like any other const object, a const pointer must be initialized, and once initialized, it's value(the address that it holds) may not be changed. . We indicate that the pointer is const by putting the const after the *. This placement indicates that it is the pointer, not the pointed-to type, that is const.
+
+```c++
+int errNumb = 0;
+int *const curErr = &errNumb; // curErr will always point to errNumb
+const double pi = 3.14159;
+const double *const pip = &pi; // pip is a const pointer to a const object
+*pip = 2.72; // error: pip is a pointer to const
+// if the object to which curErr points (i.e., errNumb) is nonzero
+if (*curErr) {
+ errorHandler();
+ *curErr = 0; // ok: reset the value of the object to which curErr is bound
+}
+```
+
+The fact that a pointer is itself const says nothing about whether we can use the pointer to change the underlying object. Whether we can change that object depends entirely on the type to which the pointer points. 
+
+### 2.4.3 Top-Level const
+
+We use the term top-level const to indicate that the pointer itself is a const. When a pointer can point to a const object, we refer to that const as a low-level const.
